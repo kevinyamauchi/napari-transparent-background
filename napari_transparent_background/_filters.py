@@ -44,12 +44,12 @@ class TransparentBackground(Filter):
     FRAG_SHADER = """
         void apply_alpha() {
             float r_diff = gl_FragColor.r - $transparent_value.r;
-            if (abs(r_diff) < 0.005) {
+            if (abs(r_diff) < 1e-10) {
                 float g_diff = gl_FragColor.g - $transparent_value.g;
-                if (abs(g_diff) < 0.005) {
+                if (abs(g_diff) < 1e-10) {
                     float b_diff = gl_FragColor.b - $transparent_value.b;
-                    if (abs(b_diff) < 0.005) {
-                        gl_FragColor.a = $alpha;
+                    if (abs(b_diff) < 1e-10) {
+                        discard;
                     }
                 }
             }
@@ -87,4 +87,31 @@ class TransparentBackground(Filter):
         self.fshader['transparent_value'] = transparent_value
 
 
-AVAILABLE_FILTERS = {'transparent_background': TransparentBackground}
+class FragDepth(Filter):
+    FRAG_SHADER = """
+        void apply_frag_depth() {   
+            
+            gl_FragDepth = $frag_depth;
+        }
+    """
+
+    def __init__(self, frag_depth: float = 0):
+        super(FragDepth, self).__init__(fcode=self.FRAG_SHADER)
+
+        self.frag_depth = frag_depth
+
+
+    @property
+    def frag_depth(self) -> float:
+        return self._frag_depth
+
+    @frag_depth.setter
+    def frag_depth(self, frag_depth: float):
+        if not isinstance(frag_depth, float):
+            frag_depth = float(frag_depth)
+        self._frag_depth = frag_depth
+        self.fshader['frag_depth'] = frag_depth
+
+
+AVAILABLE_FILTERS = {'transparent_background': TransparentBackground,
+                     'frag_depth' : FragDepth}

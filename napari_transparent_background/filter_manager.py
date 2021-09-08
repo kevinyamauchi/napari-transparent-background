@@ -8,8 +8,9 @@ class ImageFilterManager:
 
     def _initialize_filter_map(self):
         # todo filter for image layers
+        valid_layers = [l for l in self.viewer.layers if type(l).__name__ == 'Image']
 
-        self.filter_map = {layer.name: self._initialize_filter_model(layer.name) for layer in self.viewer.layers}
+        self.filter_map = {layer.name: self._initialize_filter_model(layer.name) for layer in valid_layers}
 
     def _initialize_filter_model(self, layer_name, filter='transparent_background'):
         layer = self.viewer.layers[layer_name]

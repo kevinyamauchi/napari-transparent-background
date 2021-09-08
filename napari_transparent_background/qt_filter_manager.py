@@ -2,17 +2,18 @@ from qtpy.QtWidgets import QWidget, QVBoxLayout, QCheckBox
 
 from .filter_manager import ImageFilterManager
 
+
 class QtFilterManager(QWidget):
     """Widget to control the filter settings"""
     def __init__(self, napari_viewer):
         super().__init__()
+        print('hi')
         self.viewer = napari_viewer
         self.filter_manager = ImageFilterManager(self.viewer)
 
-        self.layout = QVBoxLayout()
+        self.setLayout(QVBoxLayout())
         self._initialize_checkboxes()
 
-        self.setLayout(self.layout)
 
     def _initialize_checkboxes(self):
         self.checkboxes = []
@@ -22,4 +23,4 @@ class QtFilterManager(QWidget):
             checkbox.stateChanged.connect(filter._on_toggle)
             self.checkbox_layout.addWidget(checkbox)
             self.checkboxes.append(checkbox)
-        self.layout.addLayout(self.checkbox_layout)
+        self.layout().addLayout(self.checkbox_layout)
